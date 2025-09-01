@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verse Client</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif;}
+body { 
+    min-height:100vh; 
+    background:linear-gradient(135deg,#0d0f1a,#05060c); 
+    color:#fff; 
+    overflow-x:hidden; 
+    perspective:1200px;
+    position: relative;
+}
+
+/* Floating blobs */
+.blob { 
+    position:absolute; 
+    border-radius:50%; 
+    filter:blur(60px); 
+    opacity:0.15; 
+    animation: float 12s ease-in-out infinite alternate; 
+    z-index:0;
+}
+.blob:nth-child(1) { width:250px;height:250px; background:radial-gradient(circle,#6366f1,transparent); top:5%; left:10%; animation-delay:0s;}
+.blob:nth-child(2) { width:300px;height:300px; background:radial-gradient(circle,#ec4899,transparent); top:40%; left:65%; animation-delay:2s;}
+.blob:nth-child(3) { width:280px;height:280px; background:radial-gradient(circle,#22d3ee,transparent); top:65%; left:15%; animation-delay:4s;}
+@keyframes float { 0%{transform:translateY(0) translateX(0);} 100%{transform:translateY(-40px) translateX(20px);} }
+
+/* Header */
+header { 
+    position:sticky; top:0; z-index:10; backdrop-filter:blur(15px); 
+    background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1); 
+    padding:15px 30px; display:flex; justify-content:space-between; align-items:center; 
+    border-radius:15px; margin:15px; box-shadow:0 8px 30px rgba(0,0,0,0.3);
+}
+header .logo { font-weight:700; font-size:1.8rem; display:flex; align-items:center; gap:10px; letter-spacing:1px;}
+header nav button { 
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); 
+    backdrop-filter:blur(15px); padding:10px 20px; border-radius:25px; 
+    color:#fff; cursor:pointer; transition:0.4s; margin-left:10px;
+}
+header nav button.active, header nav button:hover { 
+    background:rgba(255,255,255,0.2); 
+    box-shadow:0 0 25px rgba(99,102,241,0.6), 0 0 50px rgba(236,72,153,0.3); 
+}
+
+/* Main content */
+.container { max-width:1400px; margin:auto; padding:60px 20px; position: relative; z-index:5;}
+.section { display:none; gap:25px; flex-wrap:wrap; margin-top:40px;}
+.section.active { display:flex; }
+
+/* Card */
+.card {
+    position:relative; 
+    flex:1 1 calc(33% - 20px); 
+    min-width:280px; 
+    padding:30px; 
+    border-radius:30px;
+    backdrop-filter:blur(25px); 
+    background:rgba(255,255,255,0.05); 
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 20px 40px rgba(0,0,0,0.3), 0 10px 80px rgba(99,102,241,0.3);
+    transition:0.5s;
+    transform-style:preserve-3d;
+}
+.card:hover { 
+    transform: perspective(800px) rotateX(8deg) rotateY(12deg) translateZ(10px); 
+    box-shadow:0 30px 60px rgba(0,0,0,0.4), 0 15px 100px rgba(99,102,241,0.5);
+}
+
+/* Card bloom */
+.card::before { 
+    content:""; 
+    position:absolute; 
+    inset:-40px; 
+    border-radius:30px; 
+    background:linear-gradient(135deg,#6366f1, #ec4899,#22d3ee); 
+    filter:blur(80px); 
+    opacity:0.15; 
+    z-index:-1;
+    transition:0.5s;
+}
+.card:hover::before {
+    opacity:0.35;
+    filter:blur(100px);
+}
+
+/* Buttons */
+.glass-btn {
+    display:inline-flex; align-items:center; gap:10px; padding:12px 25px; border-radius:25px;
+    backdrop-filter:blur(15px); background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15);
+    text-decoration:none; color:#fff; font-weight:500; margin-top:15px; transition:0.4s, transform 0.2s;
+}
+.glass-btn:hover { 
+    background:rgba(255,255,255,0.2); 
+    box-shadow:0 0 25px rgba(99,102,241,0.7), 0 0 50px rgba(236,72,153,0.4);
+    transform: translateY(-3px);
+}
+
+/* Text */
+h2 { font-size:2.2rem; margin-bottom:15px; letter-spacing:1px; }
+p { color:rgba(255,255,255,0.75); line-height:1.6; }
+footer { text-align:center; margin-top:70px; color:rgba(255,255,255,0.5); font-size:0.9rem; }
+
+/* Responsive */
+@media(max-width:1000px){.card{flex:1 1 calc(50% - 20px);}}
+@media(max-width:650px){.card{flex:1 1 100%;}}
+</style>
+</head>
+<body>
+
+<!-- Floating blobs -->
+<div class="blob"></div>
+<div class="blob"></div>
+<div class="blob"></div>
+
+<!-- Header -->
+<header>
+  <div class="logo">Verse Client</div>
+  <nav>
+    <button class="tab-btn active" data-tab="home">Главная</button>
+    <button class="tab-btn" data-tab="shop">Покупка</button>
+    <button class="tab-btn" data-tab="help">Помощь</button>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- Главная -->
+  <div id="home" class="section active">
+    <div class="card">
+      <h2>Discord канал</h2>
+      <p>Присоединяйтесь к сообществу Verse.</p>
+      <a class="glass-btn" href="https://discord.gg/QXRx7SAs4y" target="_blank">Перейти в Discord</a>
+    </div>
+    <div class="card">
+      <h2>Telegram канал</h2>
+      <p>Анонсы и оповещения.</p>
+      <a class="glass-btn" href="https://t.me/VerseClient" target="_blank">Открыть Telegram</a>
+    </div>
+    <div class="card">
+      <h2>Безопасность</h2>
+      <p>Только официальные ссылки.</p>
+      <a class="glass-btn" href="#help">К разделу Помощь</a>
+    </div>
+  </div>
+
+  <!-- Покупка -->
+  <div id="shop" class="section">
+    <div class="card">
+      <h2>Покупка через Discord</h2>
+      <p>Все покупки безопасно через наш сервер.</p>
+      <a class="glass-btn" href="https://discord.gg/QXRx7SAs4y" target="_blank">Открыть Discord</a>
+    </div>
+    <div class="card">
+      <h2>Покупка на FunPay</h2>
+      <p>Официальная покупка через FunPay.</p>
+      <a class="glass-btn" href="https://funpay.com/users/15611494" target="_blank">Перейти на FunPay</a>
+    </div>
+    <div class="card">
+      <h2>Telegram</h2>
+      <p>Оплата внутри Telegram.</p>
+      <a class="glass-btn" href="https://t.me/VerseClient" target="_blank">Открыть Telegram</a>
+    </div>
+  </div>
+
+  <!-- Помощь -->
+  <div id="help" class="section">
+    <div class="card">
+      <h2>О проекте</h2>
+      <p>Название: Verse Client<br>Версия: beta 1.0<br>лучшие обходы - под холитайм.</p>
+    </div>
+    <div class="card">
+      <h2>Контакты</h2>
+      <a class="glass-btn" href="https://discord.gg/QXRx7SAs4y" target="_blank">Discord поддержка</a>
+      <a class="glass-btn" href="https://t.me/VerseClient" target="_blank">Telegram поддержка</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 Verse Client. Все права защищены.</footer>
+
+<script>
+const buttons = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.section');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    sections.forEach(s => s.id === tab ? s.classList.add('active') : s.classList.remove('active'));
+  });
+});
+
+// 3D tilt for cards
+const cards = document.querySelectorAll('.card');
+cards.forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width/2;
+    const y = e.clientY - rect.top - rect.height/2;
+    card.style.transform = `perspective(800px) rotateX(${-y/10}deg) rotateY(${x/10}deg) translateZ(10px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+  });
+});
+</script>
+
+</body>
+</html>
